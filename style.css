@@ -129,7 +129,7 @@ body {
 .links-container { display: flex; flex-direction: column; gap: 20px; } 
 
 .link-banner-16x9 {
-    display: block; width: 75%; aspect-ratio: 16 / 9;
+    display: block; width: 100%; aspect-ratio: 16 / 9;
     border-radius: 18px;
     position: relative;
     border: 2px solid var(--glass-border);
@@ -208,44 +208,21 @@ body {
 }
 #btn-copy-pix:active { transform: scale(0.98); }
 
-/* --- MEDIA QUERIES (DESKTOP) --- */
+/* --- MEDIA QUERIES --- */
 @media (min-width: 900px) {
-    
-    /* 1. Reset para permitir rolagem suave */
-    body {
-        overflow-y: auto; /* Libera a barra de rolagem */
-    }
-
     .main-wrapper { 
         flex-direction: row; 
-        align-items: flex-start; /* Alinha no topo, essencial para o efeito sticky */
-        justify-content: center;
-        width: 100%;
-        max-width: 1200px;
-        margin: 60px auto; /* Margem generosa no topo/fundo */
-        gap: 50px; /* Espaço entre Perfil e Links */
-        padding: 0 40px;
+        align-items: flex-start;
+        margin-top: 50px;
+        margin-bottom: 50px;
     }
     
-    /* 2. Barra Lateral (Perfil) - Tamanho Original e Fixa */
     .profile-area { 
-        width: 380px; /* Largura fixa para manter o tamanho original robusto */
-        position: sticky; /* O PULO DO GATO: Ela "gruda" na tela */
-        top: 40px; /* Distância do topo ao rolar */
+        width: 35%; 
+        position: sticky; /* PERFIL FIXO */
+        top: 40px; 
         z-index: 10;
-        flex-shrink: 0; /* Impede que ela encolha */
-        height: fit-content; /* Altura ajustada ao conteúdo */
     }
     
-    /* 3. Área dos Links - Grande e Proporcional */
-    .links-area { 
-        flex: 1; /* Ocupa todo o espaço restante disponível */
-        max-width: 750px; /* Define um limite máximo para não ficar "esticado" demais em telas 4k */
-        display: block;
-    }
-
-    .links-container {
-        width: 100%; /* Preenche 100% da área disponível (Botões Grandes) */
-        /* A altura será automática baseada na proporção 16:9 */
-    }
+    .links-area { width: 65%; }
 }
