@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">Ferraz e Soares - Links</title>
+    
+    <link id="favicon-link" rel="shortcut icon" href="assets/linkaê-favicon-light.jpg" type="image/jpg">
+
+    <link id="google-font-link" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="style.css">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+
+    <div class="overlay"></div>
+
+    <div class="main-wrapper">
+        
+        <aside class="profile-area glass-effect">
+            
+            <div class="header-controls">
+                <button id="theme-toggle" class="control-btn" title="Mudar Tema">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <button id="btn-share-page" class="control-btn" title="Compartilhar">
+                    <i class="fas fa-qrcode"></i>
+                </button>
+            </div>
+
+            <div class="profile-content">
+                <img src="assets/linkaê-perfil.jpg" alt="Foto Perfil" class="profile-img" id="ui-profile-img">
+                
+                <h1 class="brand-name" id="ui-name">FERRAZ E SOARES</h1>
+                <p class="brand-slogan" id="ui-bio">Soluções inteligentes para você.</p>
+                
+                <div class="location-badge">
+                    <i class="fas fa-map-pin"></i> <span id="ui-location">Garanhuns - PE</span>
+                </div>
+
+                <div class="quick-actions">
+                    <button id="btn-pix" class="action-btn pix-btn">
+                        <i class="fa-brands fa-pix"></i> <span>Pix</span>
+                    </button>
+                    <a href="#" id="ui-btn-call" class="action-btn call-btn">
+                        <i class="fas fa-phone"></i> <span>Ligar</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="footer-info">
+                <p>© 2025 Grupo Ferraz</p>
+            </div>
+        </aside>
+
+        <main class="links-area">
+            <div class="links-container" id="links-list">
+                </div>
+        </main>
+    </div>
+
+    <div id="qr-modal" class="modal-overlay">
+        <div class="modal-content glass-effect">
+            <button class="close-modal"><i class="fas fa-times"></i></button>
+            
+            <h3 id="modal-title">Pagamento Pix</h3>
+            
+            <div class="qr-wrapper">
+                <div id="qrcode-container"></div>
+            </div>
+
+            <div id="pix-copy-area" style="display:none;">
+                <p class="pix-instructions">Copie o código abaixo e cole no seu banco:</p>
+                <div class="pix-code-box">
+                    <textarea id="pix-code-text" readonly></textarea>
+                    <button id="btn-copy-pix">
+                        <i class="fas fa-copy"></i> Copiar Código
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,228 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;700&display=swap');
+
+:root {
+    /* --- PALETA DE CORES (Atualizada) --- */
+    /* Substituí o azul (#2563eb) pelo Verde do Pix (#32bcad) para unificar o design */
+    --primary: #e2ca3e; 
+    
+    --glass-bg: rgba(255, 255, 255, 0.15);
+    --glass-border: rgba(255, 255, 255, 0.2);
+    --text-color: #ffffff;
+    --text-muted: #e2e8f0;
+    --font-family: 'Outfit', sans-serif;
+    
+    /* Caminhos padrão */
+    --bg-image-mob: url('assets/linkaê-mobile-background.jpg');
+    --bg-image-desk: url('assets/linkaê-desktop-background.jpg');
+}
+
+/* --- TEMA LIGHT --- */
+[data-theme="light"] {
+    /* No modo claro, usamos um verde um pouco mais escuro para leitura */
+    --primary: #2a9d8f; 
+    
+    --glass-bg: rgba(255, 255, 255, 0.85);
+    --glass-border: rgba(0, 0, 0, 0.1);
+    --text-color: #1a1a1a;
+    --text-muted: #555;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: var(--font-family); }
+
+body {
+    background-image: var(--bg-image-mob); 
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    color: var(--text-color);
+    min-height: 100vh;
+    transition: color 0.3s;
+}
+
+@media (min-width: 900px) {
+    body { background-image: var(--bg-image-desk); }
+}
+
+.overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.7));
+    z-index: -1;
+}
+
+[data-theme="light"] .overlay {
+    background: linear-gradient(to bottom, rgba(255,255,255,0.4), rgba(255,255,255,0.2));
+}
+
+/* --- LAYOUT GERAL --- */
+.main-wrapper {
+    display: flex; flex-direction: column; 
+    padding: 20px; gap: 30px; 
+    max-width: 1100px; margin: 0 auto;
+}
+
+.glass-effect {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.15);
+}
+
+/* --- PERFIL (ESQUERDA) --- */
+.profile-area {
+    padding: 40px 20px; text-align: center; 
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center; 
+    position: relative;
+    width: 100%;
+}
+
+/* FOTO DE PERFIL MAIOR */
+.profile-img {
+    width: 180px; height: 180px; border-radius: 50%;
+    border: 5px solid rgba(255,255,255,0.3); object-fit: cover;
+    margin-bottom: 20px; transition: transform 0.3s;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+[data-theme="light"] .profile-img { border-color: rgba(255,255,255,1); }
+
+.brand-name { font-size: 2rem; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px; line-height: 1.1; }
+.brand-slogan { font-size: 1rem; color: var(--text-muted); font-weight: 300; margin-bottom: 15px; }
+
+.location-badge {
+    background: rgba(0,0,0,0.2);
+    padding: 8px 20px; border-radius: 50px; font-size: 0.9rem;
+    display: inline-flex; align-items: center; gap: 8px;
+}
+[data-theme="light"] .location-badge { background: rgba(0,0,0,0.05); }
+
+/* --- CONTROLES DE TOPO (TEMA E SHARE) --- */
+.header-controls {
+    position: absolute; top: 20px; right: 20px;
+    display: flex; gap: 10px;
+}
+
+.control-btn {
+    background: rgba(255,255,255,0.15);
+    border: none; color: var(--text-color);
+    width: 40px; height: 40px; border-radius: 50%;
+    cursor: pointer; transition: 0.3s;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem;
+}
+[data-theme="light"] .control-btn { background: rgba(0,0,0,0.05); color: #333; }
+.control-btn:hover { background: var(--primary); color: white; transform: rotate(15deg); }
+
+/* --- BOTÕES DE AÇÃO (PIX/LIGAR) --- */
+.quick-actions { display: flex; gap: 15px; width: 100%; max-width: 320px; margin-top: 30px; }
+.action-btn {
+    flex: 1; padding: 14px; border: none; border-radius: 14px;
+    font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;
+    transition: 0.3s; text-decoration: none; color: white; font-size: 1rem;
+}
+.pix-btn { background: #32bcad; }
+.call-btn { background: var(--primary); }
+.action-btn:hover { transform: translateY(-3px); filter: brightness(1.1); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+
+/* --- LINKS (DIREITA) --- */
+.links-area { width: 100%; }
+.links-container { display: flex; flex-direction: column; gap: 20px; } 
+
+.link-banner-16x9 {
+    display: block; width: 100%; aspect-ratio: 16 / 9;
+    border-radius: 18px;
+    position: relative;
+    border: 2px solid var(--glass-border);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    
+    /* CORREÇÃO PARA O ZOOM NÃO CORTAR */
+    overflow: hidden;
+    -webkit-mask-image: -webkit-radial-gradient(white, black);
+    mask-image: radial-gradient(white, black);
+    z-index: 1;
+}
+
+.link-banner-16x9 img {
+    width: 100%; height: 100%; object-fit: cover; 
+    display: block; transition: transform 0.5s ease;
+}
+
+.link-banner-16x9:hover {
+    transform: translateY(-5px);
+    border-color: var(--primary); 
+    box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+}
+
+.link-banner-16x9:hover img { transform: scale(1.08); }
+
+/* --- MODAL PIX & QR CODE --- */
+.modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.9); z-index: 2000;
+    display: none; justify-content: center; align-items: center; 
+    backdrop-filter: blur(8px); padding: 20px;
+}
+
+.modal-content {
+    background: #18181b; color: #fff; padding: 30px; 
+    border-radius: 24px; width: 100%; max-width: 450px; 
+    text-align: center; position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+}
+[data-theme="light"] .modal-content { background: #fff; color: #333; }
+
+.close-modal {
+    position: absolute; right: 20px; top: 15px; 
+    background: none; border: none; color: inherit; 
+    font-size: 1.5rem; cursor: pointer; opacity: 0.7;
+}
+.close-modal:hover { opacity: 1; color: var(--primary); }
+
+.qr-wrapper {
+    background: white; padding: 15px; border-radius: 16px;
+    display: inline-block; margin: 20px 0;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.pix-instructions { margin-bottom: 10px; font-size: 0.95rem; opacity: 0.8; }
+
+.pix-code-box {
+    display: flex; flex-direction: column; gap: 10px;
+}
+
+#pix-code-text {
+    width: 100%; height: 80px; 
+    background: #0f172a; color: #4ade80; /* Estilo terminal */
+    padding: 15px; border-radius: 12px; border: 1px dashed #334155;
+    font-family: monospace; font-size: 0.85rem; resize: none;
+}
+[data-theme="light"] #pix-code-text { background: #f1f5f9; color: #15803d; border-color: #cbd5e1; }
+
+#btn-copy-pix {
+    padding: 12px; background: var(--primary); color: white;
+    border: none; border-radius: 10px; font-weight: bold;
+    cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+    transition: 0.2s;
+}
+#btn-copy-pix:active { transform: scale(0.98); }
+
+/* --- MEDIA QUERIES --- */
+@media (min-width: 900px) {
+    .main-wrapper { 
+        flex-direction: row; 
+        align-items: flex-start;
+        margin-top: 50px;
+        margin-bottom: 50px;
+    }
+    
+    .profile-area { 
+        width: 35%; 
+        position: sticky; /* PERFIL FIXO */
+        top: 40px; 
+        z-index: 10;
+    }
+    
+    .links-area { width: 65%; }
+}
