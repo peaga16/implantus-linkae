@@ -3,15 +3,15 @@
 */
 const defaultConfig = {
     content: {
-        name: "FERRAZ E SOARES",
-        bio: "Soluções inteligentes para você.",
-        location: "Garanhuns - PE",
-        phone: "+5587981811982", 
+        name: "Implantus - Pesqueira",
+        bio: "Odontologia moderna e humanizada",
+        location: "Pesqueira - PE",
+        phone: "+558799102586", 
         profileImg: "assets/linkaê-perfil.jpg", 
         links: [
-            { title: "Falar no WhatsApp", url: "https://wa.me/5587981811982", img: "assets/3.jpg" },
-            { title: "Siga nosso Instagram", url: "https://instagram.com", img: "assets/1.jpg" },
-            { title: "Localização", url: "#", img: "assets/2.jpg" }
+            { title: "Falar no WhatsApp", url: "https://wa.me/558799102586", img: "assets/3.jpg" },
+            { title: "Siga nosso Instagram", url: "https://instagram.com/implantus/pesqueira", img: "assets/1.jpg" },
+            { title: "Localização", url: "https://maps.app.goo.gl/43T61YoqPntx9bFL8", img: "assets/2.jpg" }
         ]
     },
     design: {
