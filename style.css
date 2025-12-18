@@ -226,3 +226,36 @@ body {
     
     .links-area { width: 65%; }
 }
+
+/* --- ANIMAÇÕES DE ENTRADA --- */
+
+/* 1. Definição da Animação (Deslizar de baixo para cima) */
+@keyframes slideUpFade {
+    from {
+        opacity: 0;
+        transform: translateY(40px); /* Começa 40px abaixo */
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0); /* Termina na posição original */
+    }
+}
+
+/* 2. Aplicar ao Perfil (Entra primeiro) */
+.profile-area {
+    animation: slideUpFade 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+/* 3. Aplicar aos Links (Entram depois em cascata) */
+.link-banner-16x9 {
+    opacity: 0; /* Começa invisível */
+    animation: slideUpFade 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+/* 4. O Efeito "Cascata" (Delay para cada item) */
+/* O 1º link espera 0.2s, o 2º espera 0.3s, etc... */
+.links-container .link-banner-16x9:nth-child(1) { animation-delay: 0.3s; }
+.links-container .link-banner-16x9:nth-child(2) { animation-delay: 0.4s; }
+.links-container .link-banner-16x9:nth-child(3) { animation-delay: 0.5s; }
+.links-container .link-banner-16x9:nth-child(4) { animation-delay: 0.6s; }
+.links-container .link-banner-16x9:nth-child(5) { animation-delay: 0.7s; }
