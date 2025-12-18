@@ -10,7 +10,7 @@ const defaultConfig = {
         profileImg: "assets/linkaê-perfil.jpg", 
         links: [
             { title: "Falar no WhatsApp", url: "https://wa.me/558799102586", img: "assets/3.jpg" },
-            { title: "Siga nosso Instagram", url: "https://instagram.com/implantus/pesqueira", img: "assets/1.jpg" },
+            { title: "Siga nosso Instagram", url: "https://instagram.com/implantuspesqueira", img: "assets/1.jpg" },
             { title: "Localização", url: "https://maps.app.goo.gl/43T61YoqPntx9bFL8", img: "assets/2.jpg" }
         ]
     },
