@@ -1,8 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;700&display=swap');
 
 :root {
-    /* --- PALETA DE CORES (Ajustada para puxar a identidade) --- */
-    --primary: #32bcad; /* Verde do Pix/Identidade */
+    /* --- PALETA DE CORES (Atualizada) --- */
+    /* Substituí o azul (#2563eb) pelo Verde do Pix (#32bcad) para unificar o design */
+    --primary: #e2ca3e; 
     
     --glass-bg: rgba(255, 255, 255, 0.15);
     --glass-border: rgba(255, 255, 255, 0.2);
@@ -17,7 +18,9 @@
 
 /* --- TEMA LIGHT --- */
 [data-theme="light"] {
-    --primary: #2a9d8f; 
+    /* No modo claro, usamos um verde um pouco mais escuro para leitura */
+    --primary: rgb(24, 172, 69); 
+    
     --glass-bg: rgba(255, 255, 255, 0.85);
     --glass-border: rgba(0, 0, 0, 0.1);
     --text-color: #1a1a1a;
@@ -74,6 +77,7 @@ body {
     width: 100%;
 }
 
+/* FOTO DE PERFIL MAIOR */
 .profile-img {
     width: 180px; height: 180px; border-radius: 50%;
     border: 5px solid rgba(255,255,255,0.3); object-fit: cover;
@@ -92,7 +96,7 @@ body {
 }
 [data-theme="light"] .location-badge { background: rgba(0,0,0,0.05); }
 
-/* --- CONTROLES DE TOPO --- */
+/* --- CONTROLES DE TOPO (TEMA E SHARE) --- */
 .header-controls {
     position: absolute; top: 20px; right: 20px;
     display: flex; gap: 10px;
@@ -109,7 +113,7 @@ body {
 [data-theme="light"] .control-btn { background: rgba(0,0,0,0.05); color: #333; }
 .control-btn:hover { background: var(--primary); color: white; transform: rotate(15deg); }
 
-/* --- BOTÕES DE AÇÃO --- */
+/* --- BOTÕES DE AÇÃO (PIX/LIGAR) --- */
 .quick-actions { display: flex; gap: 15px; width: 100%; max-width: 320px; margin-top: 30px; }
 .action-btn {
     flex: 1; padding: 14px; border: none; border-radius: 14px;
@@ -120,19 +124,19 @@ body {
 .call-btn { background: var(--primary); }
 .action-btn:hover { transform: translateY(-3px); filter: brightness(1.1); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
 
-/* --- LINKS --- */
+/* --- LINKS (DIREITA) --- */
 .links-area { width: 100%; }
 .links-container { display: flex; flex-direction: column; gap: 20px; } 
 
 .link-banner-16x9 {
-    display: block; width: 100%; aspect-ratio: 16 / 9;
+    display: block; width: 75%; aspect-ratio: 16 / 9;
     border-radius: 18px;
     position: relative;
     border: 2px solid var(--glass-border);
     box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     
-    /* CORREÇÃO ZOOM E CORTES */
+    /* CORREÇÃO PARA O ZOOM NÃO CORTAR */
     overflow: hidden;
     -webkit-mask-image: -webkit-radial-gradient(white, black);
     mask-image: radial-gradient(white, black);
@@ -144,7 +148,6 @@ body {
     display: block; transition: transform 0.5s ease;
 }
 
-/* Hover puxando a cor primária (Verde) */
 .link-banner-16x9:hover {
     transform: translateY(-5px);
     border-color: var(--primary); 
@@ -184,11 +187,14 @@ body {
 }
 
 .pix-instructions { margin-bottom: 10px; font-size: 0.95rem; opacity: 0.8; }
-.pix-code-box { display: flex; flex-direction: column; gap: 10px; }
+
+.pix-code-box {
+    display: flex; flex-direction: column; gap: 10px;
+}
 
 #pix-code-text {
     width: 100%; height: 80px; 
-    background: #0f172a; color: #4ade80; 
+    background: #0f172a; color: #4ade80; /* Estilo terminal */
     padding: 15px; border-radius: 12px; border: 1px dashed #334155;
     font-family: monospace; font-size: 0.85rem; resize: none;
 }
@@ -202,47 +208,44 @@ body {
 }
 #btn-copy-pix:active { transform: scale(0.98); }
 
-/* --- MEDIA QUERIES (DESKTOP CENTRALIZADO) --- */
+/* --- MEDIA QUERIES (DESKTOP) --- */
 @media (min-width: 900px) {
-    /* Trava a rolagem apenas no desktop para garantir o visual fixo */
+    
+    /* 1. Reset para permitir rolagem suave */
     body {
-        overflow-y: hidden; 
+        overflow-y: auto; /* Libera a barra de rolagem */
     }
 
     .main-wrapper { 
         flex-direction: row; 
-        align-items: center; /* Centraliza verticalmente */
-        justify-content: center; /* Centraliza horizontalmente */
-        height: 100vh; /* Ocupa exatamente 100% da tela */
-        width: 100%;
-        max-width: 1200px; /* Limite para telas muito largas */
-        padding: 0 20px;
-        margin: 0 auto;
-        gap: 60px; /* Espaço generoso entre as duas colunas */
-    }
-    
-    .profile-area { 
-        width: 380px; /* Largura fixa para o perfil */
-        height: auto;
-        max-height: 90vh; /* Nunca ultrapassa a altura da tela */
-        position: static;
-        flex-shrink: 0; /* Impede que o perfil encolha */
-    }
-    
-    .links-area { 
-        /* Aqui está o segredo: */
-        width: auto; 
-        height: auto;
-        display: flex;
-        flex-direction: column;
+        align-items: flex-start; /* Alinha no topo, essencial para o efeito sticky */
         justify-content: center;
+        width: 100%;
+        max-width: 1200px;
+        margin: 60px auto; /* Margem generosa no topo/fundo */
+        gap: 50px; /* Espaço entre Perfil e Links */
+        padding: 0 40px;
+    }
+    
+    /* 2. Barra Lateral (Perfil) - Tamanho Original e Fixa */
+    .profile-area { 
+        width: 380px; /* Largura fixa para manter o tamanho original robusto */
+        position: sticky; /* O PULO DO GATO: Ela "gruda" na tela */
+        top: 40px; /* Distância do topo ao rolar */
+        z-index: 10;
+        flex-shrink: 0; /* Impede que ela encolha */
+        height: fit-content; /* Altura ajustada ao conteúdo */
+    }
+    
+    /* 3. Área dos Links - Grande e Proporcional */
+    .links-area { 
+        flex: 1; /* Ocupa todo o espaço restante disponível */
+        max-width: 750px; /* Define um limite máximo para não ficar "esticado" demais em telas 4k */
+        display: block;
     }
 
     .links-container {
-        /* Travamos a largura em 420px. 
-           Como a proporção é 16:9, a altura será ~236px por banner.
-           3 banners * 236px = 708px + gaps. Cabe em monitores normais (768p+) 
-        */
-        width: 420px; 
+        width: 100%; /* Preenche 100% da área disponível (Botões Grandes) */
+        /* A altura será automática baseada na proporção 16:9 */
     }
 }
