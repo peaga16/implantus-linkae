@@ -12,8 +12,8 @@
     --font-family: 'Outfit', sans-serif;
     
     /* Caminhos padrão */
-    --bg-image-mob: url('assets/linkaê-mobile-background.jpg');
-    --bg-image-desk: url('assets/linkaê-desktop-background.jpg');
+    --bg-image-mob: url('assets/linkaê-mobile-background.webp');
+    --bg-image-desk: url('assets/linkaê-desktop-background.webp');
 }
 
 /* --- TEMA LIGHT --- */
@@ -259,3 +259,12 @@ body {
 .links-container .link-banner-16x9:nth-child(3) { animation-delay: 0.5s; }
 .links-container .link-banner-16x9:nth-child(4) { animation-delay: 0.6s; }
 .links-container .link-banner-16x9:nth-child(5) { animation-delay: 0.7s; }
+
+html {
+    scroll-behavior: smooth;
+}
+
+::selection {
+    background: var(--primary);
+    color: white;
+}

@@ -7,19 +7,19 @@ const defaultConfig = {
         bio: "Odontologia moderna e humanizada",
         location: "Pesqueira - PE",
         phone: "+558799102586", 
-        profileImg: "assets/linkaê-perfil.jpg", 
+        profileImg: "assets/linkaê-perfil.webp", 
         links: [
-            { title: "Falar no WhatsApp", url: "https://wa.me/558799102586", img: "assets/3.jpg" },
-            { title: "Siga nosso Instagram", url: "https://instagram.com/implantuspesqueira", img: "assets/1.jpg" },
-            { title: "Localização", url: "https://maps.app.goo.gl/43T61YoqPntx9bFL8", img: "assets/2.jpg" }
+            { title: "Falar no WhatsApp", url: "https://wa.me/558799102586", img: "assets/3.webp" },
+            { title: "Siga nosso Instagram", url: "https://instagram.com/implantuspesqueira", img: "assets/1.webp" },
+            { title: "Localização", url: "https://maps.app.goo.gl/43T61YoqPntx9bFL8", img: "assets/2.webp" }
         ]
     },
     design: {
         font: "Outfit",
-        favLight: "assets/linkaê-favicon-light.jpg", 
-        favDark: "assets/linkaê-favicon-dark.jpg",
-        bgMobile: "assets/linkaê-mobile-background.jpg", 
-        bgDesktop: "assets/linkaê-desktop-background.jpg" 
+        favLight: "assets/linkaê-favicon-light.webp", 
+        favDark: "assets/linkaê-favicon-dark.webp",
+        bgMobile: "assets/linkaê-mobile-background.webp", 
+        bgDesktop: "assets/linkaê-desktop-background.webp" 
     },
     pix: {
         key: "71288441479",
@@ -75,8 +75,8 @@ function renderSite() {
     
     c.links.forEach(link => {
         const linkHtml = `
-            <a href="${link.url}" target="_blank" class="link-banner-16x9" title="${link.title}">
-                <img src="${link.img}" alt="Banner para ${link.title}" onerror="this.src='assets/3.jpg'">
+            <a href="${link.url}" target="_blank" rel="noopener noreferrer" class="link-banner-16x9" title="${link.title}">
+                <img src="${link.img}" alt="Banner para ${link.title}" onerror="this.src='assets/3.webp'">
             </a>
         `;
         linksList.innerHTML += linkHtml;
