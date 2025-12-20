@@ -1,9 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;700&display=swap');
 
 :root {
-    /* --- PALETA DE CORES (Atualizada) --- */
-    /* Substituí o azul (#2563eb) pelo Verde do Pix (#32bcad) para unificar o design */
-    --primary: #e2ca3e; 
+    /* --- PALETA DE CORES --- */
+    --primary: #e2ca3e; /* Cor Principal (Dourado/Amarelo da marca) */
     
     --glass-bg: rgba(255, 255, 255, 0.15);
     --glass-border: rgba(255, 255, 255, 0.2);
@@ -11,16 +10,14 @@
     --text-muted: #e2e8f0;
     --font-family: 'Outfit', sans-serif;
     
-    /* Caminhos padrão */
-    --bg-image-mob: url('assets/linkaê-mobile-background.webp');
-    --bg-image-desk: url('assets/linkaê-desktop-background.webp');
+    /* Caminhos das Imagens (Alterados via JS, mas padrão aqui) */
+    --bg-image-mob: url('assets/linkaê-mobile-background.jpg');
+    --bg-image-desk: url('assets/linkaê-desktop-background.jpg');
 }
 
-/* --- TEMA LIGHT --- */
+/* --- TEMA LIGHT (Modo Claro) --- */
 [data-theme="light"] {
-    /* No modo claro, usamos um verde um pouco mais escuro para leitura */
     --primary: rgb(24, 172, 69); 
-    
     --glass-bg: rgba(255, 255, 255, 0.85);
     --glass-border: rgba(0, 0, 0, 0.1);
     --text-color: #1a1a1a;
@@ -29,20 +26,39 @@
 
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: var(--font-family); }
 
+/* --- 1. CONFIGURAÇÃO DE BACKGROUND (RESPONSIVO) --- */
 body {
+    /* Padrão Mobile: Foco no TOPO para não cortar cabeças em fotos verticais */
     background-image: var(--bg-image-mob); 
     background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
+    background-position: center top; 
+    background-repeat: no-repeat;
+    background-attachment: fixed; /* Efeito Parallax (Imagem fixa no fundo) */
+    
     color: var(--text-color);
     min-height: 100vh;
-    transition: color 0.3s;
+    overflow-x: hidden; /* Evita rolagem lateral */
+    
+    /* Suavidade na troca de temas */
+    transition: color 0.3s, background-image 0.5s ease-in-out;
 }
 
-@media (min-width: 900px) {
-    body { background-image: var(--bg-image-desk); }
+/* TABLET E DESKTOP (Acima de 768px) */
+@media (min-width: 768px) {
+    body {
+        /* Troca para a imagem horizontal */
+        background-image: var(--bg-image-desk);
+        /* Centraliza tudo */
+        background-position: center center; 
+    }
 }
 
+/* TELAS GIGANTES (4K/iMac) */
+@media (min-width: 1600px) {
+    body { background-size: cover; }
+}
+
+/* Camada escura para melhorar leitura */
 .overlay {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.7));
@@ -53,7 +69,7 @@ body {
     background: linear-gradient(to bottom, rgba(255,255,255,0.4), rgba(255,255,255,0.2));
 }
 
-/* --- LAYOUT GERAL --- */
+/* --- 2. LAYOUT GERAL --- */
 .main-wrapper {
     display: flex; flex-direction: column; 
     padding: 20px; gap: 30px; 
@@ -68,16 +84,17 @@ body {
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.15);
 }
 
-/* --- PERFIL (ESQUERDA) --- */
+/* --- 3. PERFIL (Lado Esquerdo no PC / Topo no Mobile) --- */
 .profile-area {
     padding: 40px 20px; text-align: center; 
     display: flex; flex-direction: column;
     align-items: center; justify-content: center; 
-    position: relative;
-    width: 100%;
+    position: relative; width: 100%;
+    
+    /* Animação de Entrada */
+    animation: slideUpFade 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
 }
 
-/* FOTO DE PERFIL MAIOR */
 .profile-img {
     width: 180px; height: 180px; border-radius: 50%;
     border: 5px solid rgba(255,255,255,0.3); object-fit: cover;
@@ -96,74 +113,75 @@ body {
 }
 [data-theme="light"] .location-badge { background: rgba(0,0,0,0.05); }
 
-/* --- CONTROLES DE TOPO (TEMA E SHARE) --- */
+/* Botões de Topo (Tema e Share) */
 .header-controls {
-    position: absolute; top: 20px; right: 20px;
-    display: flex; gap: 10px;
+    position: absolute; top: 20px; right: 20px; display: flex; gap: 10px;
 }
-
 .control-btn {
-    background: rgba(255,255,255,0.15);
-    border: none; color: var(--text-color);
-    width: 40px; height: 40px; border-radius: 50%;
-    cursor: pointer; transition: 0.3s;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.1rem;
+    background: rgba(255,255,255,0.15); border: none; color: var(--text-color);
+    width: 40px; height: 40px; border-radius: 50%; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
+    transition: 0.3s;
 }
 [data-theme="light"] .control-btn { background: rgba(0,0,0,0.05); color: #333; }
 .control-btn:hover { background: var(--primary); color: white; transform: rotate(15deg); }
 
-/* --- BOTÕES DE AÇÃO (PIX/LIGAR) --- */
+/* Botões de Ação Rápida */
 .quick-actions { display: flex; gap: 15px; width: 100%; max-width: 320px; margin-top: 30px; }
 .action-btn {
     flex: 1; padding: 14px; border: none; border-radius: 14px;
     font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;
     transition: 0.3s; text-decoration: none; color: white; font-size: 1rem;
 }
-.pix-btn { background: #32bcad; }
+.pix-btn { background: #32bcad; /* Verde específico do Pix */ }
 .call-btn { background: var(--primary); }
 .action-btn:hover { transform: translateY(-3px); filter: brightness(1.1); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
 
-/* --- LINKS (DIREITA) --- */
+/* --- 4. LINKS (Lado Direito no PC) --- */
 .links-area { width: 100%; }
 .links-container { display: flex; flex-direction: column; gap: 20px; } 
 
 .link-banner-16x9 {
     display: block; width: 100%; aspect-ratio: 16 / 9;
-    border-radius: 18px;
-    position: relative;
+    border-radius: 18px; position: relative;
     border: 2px solid var(--glass-border);
     box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     
-    /* CORREÇÃO PARA O ZOOM NÃO CORTAR */
+    /* Máscara para bordas arredondadas perfeitas no Safari/Chrome */
     overflow: hidden;
     -webkit-mask-image: -webkit-radial-gradient(white, black);
     mask-image: radial-gradient(white, black);
-    z-index: 1;
+    
+    /* Animação Inicial (Começa invisível) */
+    opacity: 0; 
+    animation: slideUpFade 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
 }
 
-.link-banner-16x9 img {
-    width: 100%; height: 100%; object-fit: cover; 
-    display: block; transition: transform 0.5s ease;
-}
-
-.link-banner-16x9:hover {
-    transform: translateY(-5px);
-    border-color: var(--primary); 
-    box-shadow: 0 15px 35px rgba(0,0,0,0.3);
-}
-
+.link-banner-16x9 img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.5s ease; }
+.link-banner-16x9:hover { transform: translateY(-5px); border-color: var(--primary); box-shadow: 0 15px 35px rgba(0,0,0,0.3); }
 .link-banner-16x9:hover img { transform: scale(1.08); }
 
-/* --- MODAL PIX & QR CODE --- */
+/* Efeito Cascata (Delay na entrada dos cards) */
+.links-container .link-banner-16x9:nth-child(1) { animation-delay: 0.3s; }
+.links-container .link-banner-16x9:nth-child(2) { animation-delay: 0.4s; }
+.links-container .link-banner-16x9:nth-child(3) { animation-delay: 0.5s; }
+.links-container .link-banner-16x9:nth-child(4) { animation-delay: 0.6s; }
+.links-container .link-banner-16x9:nth-child(5) { animation-delay: 0.7s; }
+
+/* Definição da Animação */
+@keyframes slideUpFade {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- 5. MODAL & QR CODE --- */
 .modal-overlay {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: rgba(0, 0, 0, 0.9); z-index: 2000;
     display: none; justify-content: center; align-items: center; 
     backdrop-filter: blur(8px); padding: 20px;
 }
-
 .modal-content {
     background: #18181b; color: #fff; padding: 30px; 
     border-radius: 24px; width: 100%; max-width: 450px; 
@@ -172,29 +190,14 @@ body {
     box-shadow: 0 20px 50px rgba(0,0,0,0.5);
 }
 [data-theme="light"] .modal-content { background: #fff; color: #333; }
-
 .close-modal {
-    position: absolute; right: 20px; top: 15px; 
-    background: none; border: none; color: inherit; 
-    font-size: 1.5rem; cursor: pointer; opacity: 0.7;
+    position: absolute; right: 20px; top: 15px; background: none; border: none; 
+    color: inherit; font-size: 1.5rem; cursor: pointer; opacity: 0.7;
 }
-.close-modal:hover { opacity: 1; color: var(--primary); }
-
-.qr-wrapper {
-    background: white; padding: 15px; border-radius: 16px;
-    display: inline-block; margin: 20px 0;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-}
-
-.pix-instructions { margin-bottom: 10px; font-size: 0.95rem; opacity: 0.8; }
-
-.pix-code-box {
-    display: flex; flex-direction: column; gap: 10px;
-}
+.qr-wrapper { background: white; padding: 15px; border-radius: 16px; display: inline-block; margin: 20px 0; }
 
 #pix-code-text {
-    width: 100%; height: 80px; 
-    background: #0f172a; color: #4ade80; /* Estilo terminal */
+    width: 100%; height: 80px; background: #0f172a; color: #4ade80; 
     padding: 15px; border-radius: 12px; border: 1px dashed #334155;
     font-family: monospace; font-size: 0.85rem; resize: none;
 }
@@ -202,69 +205,27 @@ body {
 
 #btn-copy-pix {
     padding: 12px; background: var(--primary); color: white;
-    border: none; border-radius: 10px; font-weight: bold;
+    border: none; border-radius: 10px; font-weight: bold; width: 100%;
     cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
-    transition: 0.2s;
 }
-#btn-copy-pix:active { transform: scale(0.98); }
 
-/* --- MEDIA QUERIES --- */
+/* --- 6. LAYOUT DESKTOP FINAL (Sticky Profile) --- */
 @media (min-width: 900px) {
     .main-wrapper { 
-        flex-direction: row; 
-        align-items: flex-start;
-        margin-top: 50px;
-        margin-bottom: 50px;
+        flex-direction: row; align-items: flex-start;
+        margin-top: 50px; margin-bottom: 50px;
     }
-    
     .profile-area { 
         width: 35%; 
-        position: sticky; /* PERFIL FIXO */
+        position: sticky; /* Faz o perfil ficar fixo ao rolar */
         top: 40px; 
         z-index: 10;
     }
-    
     .links-area { width: 65%; }
 }
 
-/* --- ANIMAÇÕES DE ENTRADA --- */
+/* Scroll suave para toda a página */
+html { scroll-behavior: smooth; }
 
-/* 1. Definição da Animação (Deslizar de baixo para cima) */
-@keyframes slideUpFade {
-    from {
-        opacity: 0;
-        transform: translateY(40px); /* Começa 40px abaixo */
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0); /* Termina na posição original */
-    }
-}
-
-/* 2. Aplicar ao Perfil (Entra primeiro) */
-.profile-area {
-    animation: slideUpFade 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-}
-
-/* 3. Aplicar aos Links (Entram depois em cascata) */
-.link-banner-16x9 {
-    opacity: 0; /* Começa invisível */
-    animation: slideUpFade 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-}
-
-/* 4. O Efeito "Cascata" (Delay para cada item) */
-/* O 1º link espera 0.2s, o 2º espera 0.3s, etc... */
-.links-container .link-banner-16x9:nth-child(1) { animation-delay: 0.3s; }
-.links-container .link-banner-16x9:nth-child(2) { animation-delay: 0.4s; }
-.links-container .link-banner-16x9:nth-child(3) { animation-delay: 0.5s; }
-.links-container .link-banner-16x9:nth-child(4) { animation-delay: 0.6s; }
-.links-container .link-banner-16x9:nth-child(5) { animation-delay: 0.7s; }
-
-html {
-    scroll-behavior: smooth;
-}
-
-::selection {
-    background: var(--primary);
-    color: white;
-}
+/* Cor da seleção de texto */
+::selection { background: var(--primary); color: white; }
