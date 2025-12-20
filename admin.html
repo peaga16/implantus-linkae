@@ -7,7 +7,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+
     <style>
+        /* CSS Extra para o Admin */
         body { overflow-y: auto !important; height: auto !important; }
         .admin-container { max-width: 600px; margin: 50px auto; padding: 20px; }
         .hidden { display: none !important; }
@@ -16,32 +20,65 @@
         .login-box input { display: block; width: 100%; margin: 10px 0; padding: 12px; border-radius: 8px; border: none; }
         
         .dashboard-box { display: flex; flex-direction: column; gap: 15px; }
-        label { font-weight: bold; margin-top: 15px; display: block; color: var(--primary); }
-        
-        input[type="text"], input[type="email"], input[type="password"] { 
-            width: 100%; padding: 10px; border-radius: 8px; 
-            border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.3); color: white; 
-        }
-
-        input[type="file"] { margin-top: 5px; color: #ccc; font-size: 0.9rem; }
-        .upload-status { font-size: 0.8rem; margin-top: 5px; color: #22c55e; display: none; }
+        label { font-weight: bold; margin-top: 10px; display: block; color: var(--primary); }
+        input { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.3); color: white; }
         
         .section-title { border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px; margin-top: 30px; font-size: 1.2rem; margin-bottom: 10px; }
+        
         .logout-btn { background: #ef4444 !important; margin-bottom: 20px; }
 
+        /* --- ESTILO DOS CARDS DE LINK --- */
         .link-item-editor {
-            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
-            padding: 15px; border-radius: 12px; margin-bottom: 15px; position: relative;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 15px;
+            padding-left: 40px; /* Espaço extra na esquerda para o ícone de arrastar */
+            border-radius: 12px;
+            margin-bottom: 15px;
+            position: relative;
+            transition: transform 0.2s, box-shadow 0.2s;
         }
+
+        /* Ícone de Arrastar (Handle) */
+        .drag-handle {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+            cursor: grab;
+            font-size: 1.2rem;
+            padding: 10px 5px; /* Área de clique maior */
+        }
+        .drag-handle:hover { color: var(--primary); }
+        .drag-handle:active { cursor: grabbing; }
+
+        /* Estilo quando está sendo arrastado (Ghost) */
+        .sortable-ghost {
+            opacity: 0.4;
+            background: rgba(50, 188, 173, 0.2); /* Fica esverdeado */
+            border: 2px dashed var(--primary);
+        }
+
+        .link-item-editor h4 { margin-bottom: 10px; color: #ccc; font-size: 0.9rem; }
+        .link-item-editor input { margin-bottom: 8px; font-size: 0.9rem; }
+        
         .btn-remove-link {
-            position: absolute; top: 10px; right: 10px; background: #ef4444; border: none; 
-            color: white; width: 25px; height: 25px; border-radius: 50%; cursor: pointer;
+            position: absolute; top: 10px; right: 10px;
+            background: #ef4444; border: none; color: white;
+            width: 25px; height: 25px; border-radius: 50%;
+            cursor: pointer; font-size: 0.8rem;
+            z-index: 2;
         }
+        
         .btn-add-new {
-            background: #22c55e; color: white; border: none; padding: 10px; border-radius: 8px; 
-            cursor: pointer; width: 100%; font-weight: bold; margin-top: 5px; display: flex; 
-            align-items: center; justify-content: center; gap: 8px;
+            background: #22c55e; color: white; border: none;
+            padding: 10px; border-radius: 8px; cursor: pointer;
+            width: 100%; font-weight: bold; margin-top: 5px;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
         }
+        .btn-add-new:hover { background: #16a34a; }
+
     </style>
 </head>
 <body>
@@ -51,6 +88,7 @@
         
         <div id="login-screen" class="login-box">
             <h2>Área Restrita</h2>
+            <p>Faça login para gerenciar o site</p>
             <input type="email" id="email" placeholder="E-mail">
             <input type="password" id="password" placeholder="Senha">
             <button id="btn-login" class="action-btn pix-btn">Entrar</button>
@@ -68,48 +106,28 @@
                 <label>Nome da Empresa</label><input type="text" id="inp-name">
                 <label>Bio / Slogan</label><input type="text" id="inp-bio">
                 <label>Localização</label><input type="text" id="inp-location">
-                <label>WhatsApp (Puro)</label><input type="text" id="inp-phone">
-                
-                <label>Foto de Perfil</label>
-                <input type="file" id="file-profile" accept="image/*">
-                <small id="status-profile" class="upload-status">Upload Concluído!</small>
-                <input type="hidden" id="inp-img-profile">
+                <label>WhatsApp (Número puro)</label><input type="text" id="inp-phone">
+                <label>Foto de Perfil (URL)</label><input type="text" id="inp-img-profile">
 
-                <div class="section-title">Design & Ícones</div>
-                
-                <label>Fundo Mobile (Vertical)</label>
-                <input type="file" id="file-bg-mob" accept="image/*">
-                <small id="status-bg-mob" class="upload-status">Upload Concluído!</small>
-                <input type="hidden" id="inp-bg-mob">
-
-                <label>Fundo Desktop (Horizontal)</label>
-                <input type="file" id="file-bg-desk" accept="image/*">
-                <small id="status-bg-desk" class="upload-status">Upload Concluído!</small>
-                <input type="hidden" id="inp-bg-desk">
-
-                <label>Favicon (Modo Claro/Padrão)</label>
-                <input type="file" id="file-fav-light" accept="image/*">
-                <small id="status-fav-light" class="upload-status">Upload Concluído!</small>
-                <input type="hidden" id="inp-fav-light">
-
-                <label>Favicon (Modo Escuro) - Opcional</label>
-                <input type="file" id="file-fav-dark" accept="image/*">
-                <small id="status-fav-dark" class="upload-status">Upload Concluído!</small>
-                <input type="hidden" id="inp-fav-dark">
+                <div class="section-title">Design</div>
+                <label>Imagem Fundo Mobile (URL)</label><input type="text" id="inp-bg-mob">
+                <label>Imagem Fundo Desktop (URL)</label><input type="text" id="inp-bg-desk">
 
                 <div class="section-title">Pix</div>
                 <label>Chave Pix</label><input type="text" id="inp-pix-key">
                 <label>Nome Beneficiário</label><input type="text" id="inp-pix-name">
                 <label>Cidade</label><input type="text" id="inp-pix-city">
 
-                <div class="section-title">Meus Links (Cards)</div>
-                <div id="links-list-container"></div>
+                <div class="section-title">Meus Links (Arraste para ordenar)</div>
+                
+                <div id="links-list-container">
+                    </div>
                 
                 <button type="button" id="btn-add-link" class="btn-add-new">
                     <i class="fas fa-plus"></i> Adicionar Novo Card
                 </button>
 
-                <hr style="margin: 30px 0; border-top: 1px solid rgba(255,255,255,0.1);">
+                <hr style="margin: 30px 0; border: 0; border-top: 1px solid rgba(255,255,255,0.1);">
                 <button type="submit" class="action-btn call-btn">SALVAR TUDO</button>
             </form>
         </div>
