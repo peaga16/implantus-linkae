@@ -3,18 +3,16 @@ import { db, doc, getDoc } from './firebase-config.js';
 const DOC_ID = "implantus_config";
 
 /* --- DADOS DE BACKUP (ONLINE) --- */
-/* Se o banco estiver vazio, usamos links genéricos da web, nada local */
 const DEFAULT_CONFIG = {
     content: {
         name: "Carregando...",
         bio: "Aguarde um instante...",
         location: "...",
         phone: "",
-        profileImg: "https://placehold.co/400x400?text=Aguardando+Foto", // Foto cinza provisória
+        profileImg: "https://placehold.co/400x400?text=Aguardando", 
         links: []
     },
     design: {
-        // Se não tiver background, fica uma cor sólida escura definida no CSS
         bgMobile: "", 
         bgDesktop: "",
         font: "Outfit",
@@ -29,14 +27,27 @@ let isDarkMode = localStorage.getItem('theme') !== 'light';
 
 document.addEventListener('DOMContentLoaded', async () => {
     
-    // 1. Renderiza o básico imediatamente
+    // 1. Renderiza o básico imediatamente (Skeleton)
     renderSite();
 
-    // 2. Busca os dados reais no Firebase
+    // 2. Configura botão de tema
+    const themeBtn = document.getElementById('theme-toggle');
+    if (themeBtn) {
+        // Atualiza ícone inicial
+        updateThemeIcon();
+        
+        themeBtn.addEventListener('click', () => {
+            isDarkMode = !isDarkMode;
+            localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+            renderSite(); // Re-renderiza para aplicar favicon e cores
+        });
+    }
+
+    // 3. Busca os dados reais no Firebase
     await fetchFromFirebase();
 
-    // 3. Configura eventos
-    setupEvents();
+    // 4. Configura eventos de Modal
+    setupGeneralEvents();
 });
 
 async function fetchFromFirebase() {
@@ -60,9 +71,12 @@ function renderSite() {
     const c = appConfig.content || DEFAULT_CONFIG.content;
     const d = appConfig.design || DEFAULT_CONFIG.design;
 
-    // Textos
+    // --- TEXTOS ---
     const elName = document.getElementById('ui-name');
-    if (elName) elName.innerText = c.name || "";
+    if (elName) {
+        elName.innerText = c.name || "";
+        document.title = c.name || "Linkaê";
+    }
     
     const elBio = document.getElementById('ui-bio');
     if (elBio) elBio.innerText = c.bio || "";
@@ -70,48 +84,44 @@ function renderSite() {
     const elLoc = document.getElementById('ui-location');
     if (elLoc) elLoc.innerText = c.location || "";
     
-    // FOTO DE PERFIL (Com proteção contra erro)
+    // --- FOTO DE PERFIL ---
     const imgEl = document.getElementById('ui-profile-img');
     if (imgEl) {
-        // Tenta carregar a imagem do banco. Se não tiver, usa o placeholder.
-        imgEl.src = c.profileImg || 'https://placehold.co/400x400?text=Adicione+Foto';
-        
-        // Se a imagem do banco quebrar (link antigo), carrega o placeholder
+        imgEl.src = c.profileImg || 'https://placehold.co/400x400?text=Foto';
         imgEl.onerror = function() { 
-            this.onerror = null; // Impede loop
-            this.src = 'https://placehold.co/400x400?text=Erro+na+Foto'; 
+            this.onerror = null; 
+            this.src = 'https://placehold.co/400x400?text=Erro'; 
         };
+        // Atualiza o compartilhamento do WhatsApp
+        updateMetaTags(c.name, c.bio, c.profileImg);
     }
     
     const btnCall = document.getElementById('ui-btn-call');
     if (btnCall) btnCall.href = c.phone ? `tel:${c.phone}` : "#";
-    
-    if (c.name) document.title = c.name;
 
-    // LISTA DE LINKS (CARDS)
+    // --- LISTA DE LINKS (CARDS) ---
     const linksList = document.getElementById('links-list');
     
     if (linksList && c.links && Array.isArray(c.links)) {
         linksList.innerHTML = ''; 
         
         c.links.forEach(link => {
-            // Placeholder para o banner do card
-            const fallbackImage = 'https://placehold.co/600x338?text=Ver+Link';
-            
+            // Lógica: Se a imagem falhar, esconde a imagem e mostra o texto
             const linkHtml = `
                 <a href="${link.url}" target="_blank" rel="noopener noreferrer" class="link-banner-16x9" title="${link.title}">
-                    <img src="${link.img || fallbackImage}" 
-                         alt="${link.title}" 
-                         onerror="this.onerror=null; this.src='${fallbackImage}';">
+                    
+                    <img src="${link.img}" alt="${link.title}" 
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                    
+                    <div class="link-fallback-text">${link.title}</div>
                 </a>
             `;
             linksList.innerHTML += linkHtml;
         });
     }
 
-    // BACKGROUNDS (CSS Variables)
+    // --- BACKGROUNDS & FONTE ---
     const root = document.documentElement;
-    // Se tiver imagem no banco, usa. Se não, remove a variável (fica cor de fundo do CSS)
     if (d.bgMobile) root.style.setProperty('--bg-image-mob', `url('${d.bgMobile}')`);
     if (d.bgDesktop) root.style.setProperty('--bg-image-desk', `url('${d.bgDesktop}')`);
     
@@ -123,9 +133,12 @@ function renderSite() {
         }
     }
 
+    // --- FAVICON ---
     const favLink = document.getElementById('favicon-link');
-    if(favLink && (d.favLight || d.favDark)) {
-        favLink.href = isDarkMode ? (d.favDark || d.favLight) : d.favLight;
+    if(favLink) {
+        // Se tiver favicon configurado, usa. Se não, mantém vazio.
+        const iconUrl = isDarkMode ? (d.favDark || d.favLight) : d.favLight;
+        if (iconUrl) favLink.href = iconUrl;
     }
 
     updateThemeIcon();
@@ -137,16 +150,19 @@ function updateThemeIcon() {
     document.documentElement.setAttribute('data-theme', isDarkMode ? 'dark' : 'light');
 }
 
-function setupEvents() {
-    const themeBtn = document.getElementById('theme-toggle');
-    if (themeBtn) {
-        themeBtn.addEventListener('click', () => {
-            isDarkMode = !isDarkMode;
-            localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
-            renderSite(); 
-        });
-    }
-    setupGeneralEvents();
+// Atualiza título e imagem para quando compartilhar o link
+function updateMetaTags(title, desc, img) {
+    const setMeta = (prop, val) => {
+        if(!val) return;
+        const tag = document.querySelector(`meta[property="${prop}"]`) || document.querySelector(`meta[name="${prop}"]`);
+        if(tag) tag.content = val;
+    };
+    setMeta('og:title', title);
+    setMeta('og:description', desc);
+    setMeta('og:image', img);
+    setMeta('twitter:title', title);
+    setMeta('twitter:description', desc);
+    setMeta('twitter:image', img);
 }
 
 /* --- MODAIS E PIX --- */
@@ -193,7 +209,6 @@ function setupGeneralEvents() {
 }
 
 function gerarPix(container) {
-    // Se o banco não carregou ainda, evita erro
     if (!appConfig || !appConfig.pix) return;
 
     const p = appConfig.pix; 

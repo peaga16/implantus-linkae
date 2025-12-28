@@ -11,7 +11,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
 
     <style>
-        /* CSS Extra para o Admin */
+        /* CSS GERAL DO ADMIN */
         body { overflow-y: auto !important; height: auto !important; }
         .admin-container { max-width: 600px; margin: 50px auto; padding: 20px; }
         .hidden { display: none !important; }
@@ -20,10 +20,10 @@
         .login-box input { display: block; width: 100%; margin: 10px 0; padding: 12px; border-radius: 8px; border: none; }
         
         .dashboard-box { display: flex; flex-direction: column; gap: 15px; }
-        label { font-weight: bold; margin-top: 10px; display: block; color: var(--primary); }
-        input { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.3); color: white; }
+        label { font-weight: bold; margin-top: 15px; display: block; color: var(--primary); font-size: 0.9rem;}
+        input { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.3); color: white; margin-top: 5px; }
         
-        .section-title { border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px; margin-top: 30px; font-size: 1.2rem; margin-bottom: 10px; }
+        .section-title { border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px; margin-top: 30px; font-size: 1.2rem; margin-bottom: 10px; font-weight: bold;}
         
         .logout-btn { background: #ef4444 !important; margin-bottom: 20px; }
 
@@ -31,53 +31,39 @@
         .link-item-editor {
             background: rgba(255,255,255,0.05);
             border: 1px solid rgba(255,255,255,0.1);
-            padding: 15px;
-            padding-left: 40px; /* Espaço extra na esquerda para o ícone de arrastar */
-            border-radius: 12px;
-            margin-bottom: 15px;
-            position: relative;
-            transition: transform 0.2s, box-shadow 0.2s;
+            padding: 15px 15px 15px 40px; 
+            border-radius: 12px; margin-bottom: 15px; position: relative;
         }
-
-        /* Ícone de Arrastar (Handle) */
         .drag-handle {
-            position: absolute;
-            left: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #666;
-            cursor: grab;
-            font-size: 1.2rem;
-            padding: 10px 5px; /* Área de clique maior */
+            position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+            color: #666; cursor: grab; font-size: 1.2rem; padding: 10px 5px;
         }
-        .drag-handle:hover { color: var(--primary); }
-        .drag-handle:active { cursor: grabbing; }
-
-        /* Estilo quando está sendo arrastado (Ghost) */
-        .sortable-ghost {
-            opacity: 0.4;
-            background: rgba(50, 188, 173, 0.2); /* Fica esverdeado */
-            border: 2px dashed var(--primary);
-        }
-
-        .link-item-editor h4 { margin-bottom: 10px; color: #ccc; font-size: 0.9rem; }
-        .link-item-editor input { margin-bottom: 8px; font-size: 0.9rem; }
-        
         .btn-remove-link {
             position: absolute; top: 10px; right: 10px;
             background: #ef4444; border: none; color: white;
-            width: 25px; height: 25px; border-radius: 50%;
-            cursor: pointer; font-size: 0.8rem;
-            z-index: 2;
+            width: 25px; height: 25px; border-radius: 50%; cursor: pointer; z-index: 2;
         }
-        
         .btn-add-new {
-            background: #22c55e; color: white; border: none;
-            padding: 10px; border-radius: 8px; cursor: pointer;
-            width: 100%; font-weight: bold; margin-top: 5px;
+            background: #22c55e; color: white; border: none; padding: 10px; 
+            border-radius: 8px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 5px;
             display: flex; align-items: center; justify-content: center; gap: 8px;
         }
-        .btn-add-new:hover { background: #16a34a; }
+
+        /* --- ESTILOS PADRÃO DE UPLOAD --- */
+        .upload-area { display: flex; align-items: center; gap: 10px; margin-bottom: 5px; }
+        .inp-file-hidden { display: none; }
+        .btn-upload-trigger {
+            background: #3b82f6; color: white; padding: 8px 12px;
+            border-radius: 6px; border: none; cursor: pointer; font-size: 0.85rem;
+            display: flex; align-items: center; gap: 5px; white-space: nowrap;
+        }
+        .btn-upload-trigger:hover { background: #2563eb; }
+        .btn-upload-trigger:disabled { background: #64748b; cursor: not-allowed; }
+        
+        /* Input readonly com cor diferente para indicar que é automático */
+        input[readonly] { background: rgba(0,0,0,0.5) !important; color: #ccc !important; cursor: default; }
+        
+        .upload-status { font-size: 0.8rem; color: #fbbf24; margin-left: 5px; display: none; }
 
     </style>
 </head>
@@ -102,26 +88,74 @@
             </div>
 
             <form id="admin-form">
+                
                 <div class="section-title">Perfil</div>
                 <label>Nome da Empresa</label><input type="text" id="inp-name">
                 <label>Bio / Slogan</label><input type="text" id="inp-bio">
                 <label>Localização</label><input type="text" id="inp-location">
                 <label>WhatsApp (Número puro)</label><input type="text" id="inp-phone">
-                <label>Foto de Perfil (URL)</label><input type="text" id="inp-img-profile">
+                
+                <label>Foto de Perfil</label>
+                <div class="upload-area">
+                    <input type="file" id="file-profile" class="inp-file-hidden" accept="image/*">
+                    <button type="button" id="btn-upload-profile" class="btn-upload-trigger">
+                        <i class="fas fa-paperclip"></i> Anexar Foto
+                    </button>
+                    <input type="text" id="inp-img-profile" readonly placeholder="Link da imagem...">
+                    <span id="status-profile" class="upload-status">Enviando...</span>
+                </div>
 
-                <div class="section-title">Design</div>
-                <label>Imagem Fundo Mobile (URL)</label><input type="text" id="inp-bg-mob">
-                <label>Imagem Fundo Desktop (URL)</label><input type="text" id="inp-bg-desk">
+                <div class="section-title">Design & Backgrounds</div>
+                
+                <label>Imagem Fundo Mobile</label>
+                <div class="upload-area">
+                    <input type="file" id="file-bg-mob" class="inp-file-hidden" accept="image/*">
+                    <button type="button" id="btn-upload-bg-mob" class="btn-upload-trigger">
+                        <i class="fas fa-paperclip"></i> Anexar Mobile
+                    </button>
+                    <input type="text" id="inp-bg-mob" readonly placeholder="Link da imagem...">
+                    <span id="status-bg-mob" class="upload-status">Enviando...</span>
+                </div>
 
-                <div class="section-title">Pix</div>
+                <label>Imagem Fundo Desktop</label>
+                <div class="upload-area">
+                    <input type="file" id="file-bg-desk" class="inp-file-hidden" accept="image/*">
+                    <button type="button" id="btn-upload-bg-desk" class="btn-upload-trigger">
+                        <i class="fas fa-paperclip"></i> Anexar Desktop
+                    </button>
+                    <input type="text" id="inp-bg-desk" readonly placeholder="Link da imagem...">
+                    <span id="status-bg-desk" class="upload-status">Enviando...</span>
+                </div>
+
+                <div class="section-title">Ícones (Favicon)</div>
+                
+                <label>Favicon Claro (Tema Light)</label>
+                <div class="upload-area">
+                    <input type="file" id="file-fav-light" class="inp-file-hidden" accept="image/*">
+                    <button type="button" id="btn-upload-fav-light" class="btn-upload-trigger">
+                        <i class="fas fa-paperclip"></i> Anexar Ícone
+                    </button>
+                    <input type="text" id="inp-fav-light" readonly placeholder="Link do ícone...">
+                    <span id="status-fav-light" class="upload-status">Enviando...</span>
+                </div>
+
+                <label>Favicon Escuro (Tema Dark)</label>
+                <div class="upload-area">
+                    <input type="file" id="file-fav-dark" class="inp-file-hidden" accept="image/*">
+                    <button type="button" id="btn-upload-fav-dark" class="btn-upload-trigger">
+                        <i class="fas fa-paperclip"></i> Anexar Ícone
+                    </button>
+                    <input type="text" id="inp-fav-dark" readonly placeholder="Link do ícone...">
+                    <span id="status-fav-dark" class="upload-status">Enviando...</span>
+                </div>
+
+                <div class="section-title">Dados Pix</div>
                 <label>Chave Pix</label><input type="text" id="inp-pix-key">
                 <label>Nome Beneficiário</label><input type="text" id="inp-pix-name">
                 <label>Cidade</label><input type="text" id="inp-pix-city">
 
                 <div class="section-title">Meus Links (Arraste para ordenar)</div>
-                
-                <div id="links-list-container">
-                    </div>
+                <div id="links-list-container"></div>
                 
                 <button type="button" id="btn-add-link" class="btn-add-new">
                     <i class="fas fa-plus"></i> Adicionar Novo Card
