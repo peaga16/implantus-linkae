@@ -1,4 +1,21 @@
-import { db, doc, getDoc } from './firebase-config.js';
+import { supabase } from './supabase-config.js';
+
+async function fetchFromSupabase() {
+    try {
+        const { data, error } = await supabase
+            .from('sites')
+            .select('data')
+            .eq('id', DOC_ID)
+            .single();
+
+        if (data) {
+            appConfig = data.data; 
+            renderSite(); 
+        }
+    } catch (e) {
+        console.error("Erro ao carregar dados:", e);
+    }
+}
 
 const DOC_ID = "implantus_config";
 
@@ -50,22 +67,35 @@ document.addEventListener('DOMContentLoaded', async () => {
     setupGeneralEvents();
 });
 
-async function fetchFromFirebase() {
-    try {
-        const docRef = doc(db, "sites", DOC_ID);
-        const docSnap = await getDoc(docRef);
+import { supabase } from './supabase-config.js';
 
-        if (docSnap.exists()) {
-            console.log("Dados carregados!");
-            appConfig = docSnap.data(); 
+// ... (mantenha suas variáveis DEFAULT_CONFIG e isDarkMode)
+
+async function fetchFromSupabase() {
+    try {
+        const { data, error } = await supabase
+            .from('sites')
+            .select('data')
+            .eq('id', DOC_ID)
+            .single();
+
+        if (data) {
+            console.log("Dados carregados do Supabase!");
+            appConfig = data.data; 
             renderSite(); 
-        } else {
-            console.log("Site novo. Configure no Admin.");
         }
     } catch (e) {
         console.error("Erro na conexão:", e);
     }
 }
+
+// No seu DOMContentLoaded, troque fetchFromFirebase por fetchFromSupabase
+document.addEventListener('DOMContentLoaded', async () => {
+    renderSite();
+    // ... config tema ...
+    await fetchFromSupabase(); // Chama a nova função
+    setupGeneralEvents();
+});
 
 function renderSite() {
     const c = appConfig.content || DEFAULT_CONFIG.content;
